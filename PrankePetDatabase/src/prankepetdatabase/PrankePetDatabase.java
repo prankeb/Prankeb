@@ -23,10 +23,14 @@ public class PrankePetDatabase {
         
         //Calls the main menu method to display the main menu
         mainMenu(pets);
+        System.out.println("GoodBye!");
     }
     
+
     //Method for displaying the main menu
     public static void mainMenu(ArrayList<Pet> pets){
+        int choice = 0;
+        while (choice !=7){
         Scanner input = new Scanner(System.in);
         System.out.println("\nWhat would you like to do\n1) View all pets\n2) Add more pets");
 	System.out.println("3) Update an existing pet\n4) Remove an existing pet");
@@ -34,16 +38,19 @@ public class PrankePetDatabase {
 	System.out.print("Your choice: ");
         
         //Grabs the user selection of the main menu
-        int choice = input.nextInt();
+         choice = input.nextInt();
         
         //Calls a different method depending on the choice the made
         switch(choice){
             case 1: showAllpets(pets);break;
             case 2: addPets(pets);break;
+            case 3: updatePet(pets);break;
+            case 4: removePet(pets);break;
             case 5: searchPetName(pets);break;
             case 6: searchPetAge(pets);break;
             default: break;
         }
+    }
     }
     
     //Method for adding pets to the array list
@@ -68,7 +75,6 @@ public class PrankePetDatabase {
             else{
                 //Shows users how many pets have been added 
                 System.out.println(petCounter + " pets added");
-                mainMenu(pets);
             }
         }
     }
@@ -131,7 +137,6 @@ public class PrankePetDatabase {
             }
         }
         printTableFooter(petCounter);
-        mainMenu(pets);
     }
     
     //Method for removing Pet
@@ -154,11 +159,9 @@ public class PrankePetDatabase {
         
         //Removes pet and brings user to main menu
         pet.remove(id);
-        mainMenu(pet);
         
         
     }
-    
     //Method for displaying all pets in the array list
     public static void showAllpets(ArrayList<Pet> pets){
         //Calls the table header method to display table header
@@ -177,9 +180,34 @@ public class PrankePetDatabase {
         
         //Calls method to print table footer
         printTableFooter(pets.size());
-        
-        //Takes the user back to the main menu
-        mainMenu(pets);
     }
     
+    public static void updatePet(ArrayList<Pet> pet){
+        //Displays all the pets
+        Scanner input = new Scanner(System.in);
+        showAllpets(pet);
+        
+        //Gets the id of the pet to update
+        System.out.print("Enter the pet ID you wish to update: ");
+        int id = input.nextInt();
+        
+        //Gets the new name and age
+        System.out.print("Enter new name and new age: ");
+        String name = input.next();
+        int age = input.nextInt();
+        
+        //Gets the orginal pet info
+        Pet oldPet = pet.get(id);
+        String oldName = oldPet.getName();
+        int oldAge = oldPet.getAge();
+        
+        //Displays message
+        System.out.println(oldName + " " + oldAge + " changed to " + name + " " + age);
+        
+        //Updates the pet
+        oldPet.setAge(age);
+        oldPet.setName(name);
+        
+    }
+
 }
