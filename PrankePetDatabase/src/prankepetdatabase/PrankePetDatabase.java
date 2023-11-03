@@ -40,6 +40,8 @@ public class PrankePetDatabase {
         switch(choice){
             case 1: showAllpets(pets);break;
             case 2: addPets(pets);break;
+            case 5: searchPetName(pets);break;
+            case 6: searchPetAge(pets);break;
             default: break;
         }
     }
@@ -90,6 +92,72 @@ public class PrankePetDatabase {
     static void printTableFooter(int rowCount) { //Method that displays the number of rows
 	System.out.println("\n+-------------------------+\n" + rowCount + " rows in set");
 	}
+    
+    //Method allows user to search pet by age
+    public static void searchPetAge(ArrayList<Pet> pets){
+        Scanner input = new Scanner(System.in);
+        System.out.print("Enter age to search: ");
+        int petAge = input.nextInt();
+        printTableHeader();
+        int petCounter = 0;
+        //Loops through each pet and compares it to the name the user put in
+        for(int i = 0; i < pets.size(); i++){
+            Pet pet = pets.get(i);
+            int age = pet.getAge();
+            String name = pet.getName();
+            if(age == petAge){
+                printTableRow(i, name, age);
+                petCounter++;
+            }
+        }
+        printTableFooter(petCounter);
+    }
+    
+    //Method allowing User to search for pet by name
+    public static void searchPetName(ArrayList<Pet>pets) {
+        Scanner input = new Scanner(System.in);
+        System.out.print("Enter a name to search: ");
+        String petName = input.next().toLowerCase();
+        printTableHeader();
+        int petCounter = 0;
+        for(int i = 0; i < pets.size(); i++){
+            Pet pet = pets.get(i);
+            String name = pet.getName();
+            String lowerName = name.toLowerCase();
+            int age = pet.getAge();
+            if(petName.equals(lowerName)){
+                printTableRow(i, name, age);
+                petCounter++;
+            }
+        }
+        printTableFooter(petCounter);
+        mainMenu(pets);
+    }
+    
+    //Method for removing Pet
+    public static void removePet(ArrayList<Pet> pet){
+        //Displays all the pets
+        Scanner input = new Scanner(System.in);
+        showAllpets(pet);
+        
+        //Gets the id for the removed pet from user
+        System.out.print("Enter the pet Id to remove: ");
+        int id = input.nextInt();
+        
+        //Gets the removed pet name and age
+        Pet noPet = pet.get(id);
+        String name = noPet.getName();
+        int age = noPet.getAge();
+        
+        //Displays message
+        System.out.print(name + " " + age + " is removed");
+        
+        //Removes pet and brings user to main menu
+        pet.remove(id);
+        mainMenu(pet);
+        
+        
+    }
     
     //Method for displaying all pets in the array list
     public static void showAllpets(ArrayList<Pet> pets){
