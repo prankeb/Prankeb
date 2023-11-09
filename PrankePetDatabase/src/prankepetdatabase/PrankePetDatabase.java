@@ -3,6 +3,7 @@ package prankepetdatabase;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.*;
 
 
 /**
@@ -14,27 +15,34 @@ Author: Brandon Pranke
 
 public class PrankePetDatabase {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         //Displays the message to the user
         System.out.println("Pet Database Program");
         
         //Makes an arraylist to store pet objects
         ArrayList<Pet> pets = new ArrayList<Pet>();
         
+        //Variable for the file name
+        String filename = "pets.txt";
+        
+        loadDatabase(pets,filename);
+        
         //Calls the main menu method to display the main menu
         mainMenu(pets);
         System.out.println("GoodBye!");
+        
+        saveDatabase(pets,filename);
     }
     
 
     //Method for displaying the main menu
     public static void mainMenu(ArrayList<Pet> pets){
         int choice = 0;
-        while (choice !=7){
+        while (choice !=4){
         Scanner input = new Scanner(System.in);
         System.out.println("\nWhat would you like to do\n1) View all pets\n2) Add more pets");
-	System.out.println("3) Update an existing pet\n4) Remove an existing pet");
-	System.out.println("5) Search pets by name\n6) Search pets by age\n7)Exist program");
+	System.out.println("3) Remove a pet \n4) Exit program");
+	//System.out.println("5) Search pets by name\n6) Search pets by age\n7)Exist program");
 	System.out.print("Your choice: ");
         
         //Grabs the user selection of the main menu
@@ -44,10 +52,10 @@ public class PrankePetDatabase {
         switch(choice){
             case 1: showAllpets(pets);break;
             case 2: addPets(pets);break;
-            case 3: updatePet(pets);break;
-            case 4: removePet(pets);break;
-            case 5: searchPetName(pets);break;
-            case 6: searchPetAge(pets);break;
+            case 3: removePet(pets);break;
+            //case 4: removePet(pets);break;
+            //case 5: searchPetName(pets);break;
+            //case 6: searchPetAge(pets);break;
             default: break;
         }
     }
@@ -77,6 +85,29 @@ public class PrankePetDatabase {
                 System.out.println(petCounter + " pets added");
             }
         }
+    }
+    
+    //Method for loading the file of pets
+    static void loadDatabase(ArrayList<Pet> pets, String filename)throws Exception{
+        File fileCheck = new File(filename);
+        if(fileCheck.exists()){
+        Scanner input = new Scanner(System.in);
+        Scanner file = new Scanner(fileCheck);
+        
+        
+        while (file.hasNext()){
+            String petName = file.next();
+            int petAge = file.nextInt();
+            
+            Pet pet = new Pet(petName, petAge);
+            
+            pets.add(pet);
+            
+        }
+        file.close();
+        }
+        
+        
     }
     
     
@@ -161,6 +192,14 @@ public class PrankePetDatabase {
         pet.remove(id);
         
         
+    }
+    
+    public static void saveDatabase(ArrayList<Pet> pets, String filename) throws FileNotFoundException{
+        PrintWriter output = new PrintWriter(filename);
+        for(int l=0;l<pets.size();l++) {
+            output.println(pets.get(l).getName() + " "+ pets.get(l).getAge());
+        }
+        output.close();
     }
     //Method for displaying all pets in the array list
     public static void showAllpets(ArrayList<Pet> pets){
