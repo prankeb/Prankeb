@@ -1,2 +1,5 @@
-Mikey 150
-cosmo 10
+Kitty 7
+Blue 4
+Fido 3
+Hunter 18
+Foxy 12

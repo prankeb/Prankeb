@@ -25,12 +25,14 @@ public class PrankePetDatabase {
         //Variable for the file name
         String filename = "pets.txt";
         
+        //Loads the database if needed
         loadDatabase(pets,filename);
         
         //Calls the main menu method to display the main menu
         mainMenu(pets);
         System.out.println("GoodBye!");
         
+        //Saves the database to a text file
         saveDatabase(pets,filename);
     }
     
@@ -44,10 +46,10 @@ public class PrankePetDatabase {
 	System.out.println("3) Remove a pet \n4) Exit program");
 	//System.out.println("5) Search pets by name\n6) Search pets by age\n7)Exist program");
 	System.out.print("Your choice: ");
-        
+    
         //Grabs the user selection of the main menu
          choice = input.nextInt();
-        
+        System.out.print("\n");
         //Calls a different method depending on the choice the made
         switch(choice){
             case 1: showAllpets(pets);break;
@@ -70,37 +72,63 @@ public class PrankePetDatabase {
         while(! userInput.equals("done")) {
             System.out.print("add pet (name, age): ");
             userInput = input.nextLine();
-            //If user adds a pet, it uses the infor to make a new Pet oject
-            if(! userInput.equals("done")){
-                String [] petData = userInput.split(" ");
-                String petName = petData[0];
-                int petAge = Integer.parseInt(petData[1]);
-                //Adds thenew pet to the array and counts how many pets have beeen added
-                Pet pet = new Pet(petName, petAge);
-                pets.add(pet);
-                petCounter++;
+            
+            //Checks the size of the array and if it is over 5 gives user error
+            if(pets.size() >= 5 && ! userInput.equals("done")) {
+                System.out.println("Error: Database is full");
+                //Ends the loop
+                userInput = "done";
             }
+            
             else{
-                //Shows users how many pets have been added 
-                System.out.println(petCounter + " pets added");
+                //If user adds a pet, it uses the info to make a new Pet oject
+                if(! userInput.equals("done")){
+                    String [] petData = userInput.split(" ");
+                    
+                    //if there is not 2 values inputed by user, gives user error
+                    if(petData.length != 2){
+                        System.out.println("Error: " + userInput + " is not a valid input");
+                        continue;
+                    }
+                    
+                    String petName = petData[0];
+                    int petAge = Integer.parseInt(petData[1]);
+                    
+                    //If pet age is not between 1 and 20 gives error to user
+                    if(petAge < 1 || petAge > 20){
+                        System.out.println("Error: " + petAge + " is not a valid age");
+                    }
+                    else{
+                        //Adds thenew pet to the array and counts how many pets have beeen added
+                        Pet pet = new Pet(petName, petAge);
+                        pets.add(pet);
+                        petCounter++;
+                    }
+            }
+                else{
+                    //Shows users how many pets have been added 
+                    System.out.println(petCounter + " pets added");
+            }
             }
         }
     }
     
     //Method for loading the file of pets
     static void loadDatabase(ArrayList<Pet> pets, String filename)throws Exception{
+        //makes a file object
         File fileCheck = new File(filename);
+        
+        //Checks if the database has been saved before
         if(fileCheck.exists()){
-        Scanner input = new Scanner(System.in);
         Scanner file = new Scanner(fileCheck);
         
-        
+        //Goes through each line of the file and turns the data into pet objects
         while (file.hasNext()){
             String petName = file.next();
             int petAge = file.nextInt();
             
             Pet pet = new Pet(petName, petAge);
-            
+            //Adds the pets to the array
             pets.add(pet);
             
         }
@@ -180,27 +208,39 @@ public class PrankePetDatabase {
         System.out.print("Enter the pet Id to remove: ");
         int id = input.nextInt();
         
-        //Gets the removed pet name and age
-        Pet noPet = pet.get(id);
-        String name = noPet.getName();
-        int age = noPet.getAge();
+        //Checks if the id is valid
+        if(id >= 0 && id < pet.size()){
+            //Gets the removed pet name and age
+            Pet noPet = pet.get(id);
+            String name = noPet.getName();
+            int age = noPet.getAge();
         
-        //Displays message
-        System.out.print(name + " " + age + " is removed");
+            //Displays message
+            System.out.println(name + " " + age + " is removed");
         
-        //Removes pet and brings user to main menu
-        pet.remove(id);
+            //Removes pet and brings user to main menu
+            pet.remove(id);
+            
+        }
+        
+        else{
+            System.out.println("Error: ID " + id + " does not exist");
+        }
         
         
     }
     
+    //Method for saving the database
     public static void saveDatabase(ArrayList<Pet> pets, String filename) throws FileNotFoundException{
         PrintWriter output = new PrintWriter(filename);
+        //Prints each pet name and age to a line of the text file
         for(int l=0;l<pets.size();l++) {
             output.println(pets.get(l).getName() + " "+ pets.get(l).getAge());
         }
         output.close();
     }
+    
+    
     //Method for displaying all pets in the array list
     public static void showAllpets(ArrayList<Pet> pets){
         //Calls the table header method to display table header
